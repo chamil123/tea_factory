@@ -36,13 +36,18 @@ $row['role_id'];
         <script src="public/js/sweetalert.min.js"></script>
         <link rel="stylesheet" href="public/css/sweetalert.css">
         
+        <script src="public/amcharts/amcharts/amcharts.js"></script>
+        <script src="public/amcharts/amcharts/serial.js"></script>
+        
+        
+        
         
 
 
 
 
     </head>
-    <body onload="load()">
+    <body onload="load();">
 
         <div class="container-fluid app" >
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
