@@ -76,6 +76,7 @@
                             document.getElementById('toprice').value = duesub;
                             TeaType.push({"type": type, "quantity": qty});
 alert(TeaType);
+///chamil
 
 
 
