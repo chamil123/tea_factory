@@ -1,7 +1,9 @@
 <?php
 error_reporting(E_ERROR || E_WARNING);
 session_start();
-require 'C:\xampp\htdocs\tea_factory\inc\database.php';
+//require 'C:\xampp\htdocs\tea_factory\inc\database.php';
+require './inc/database.php';
+
 include 'Model/userModel.php';
 $user = new User();
 

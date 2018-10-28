@@ -8,6 +8,7 @@
     <head>
         <script src="public/amcharts/amcharts/amcharts.js"></script>
         <script src="public/amcharts/amcharts/serial.js"></script>
+          <script src="public/amcharts/amcharts/pie.js" type="text/javascript"></script>
         <script src="public/js/jquery-1.8.3.min.js"></script>
 
         <style>
@@ -59,110 +60,98 @@
         </style>   
 
         <script>
-            var TeaType = [];
-
-            function load() {
+            var Center = [
+            ];
+            $(document).on("ready", function () {
+                loadData();
+            });
+            var loadData = function () {
                 $.ajax({
                     type: "POST",
                     url: "gettetypefromajax.php",
-                    success: function(data) {
-
+                    success: function (data) {
                         var pro = JSON.parse(data);
                         for (var i in pro) {
-                            
                             var type = pro[i].drytea_type;
                             var qty = pro[i].remaining_qty;
-                            var duesub = (parseFloat(price)) * (parseFloat(nqty));
-                            document.getElementById('toprice').value = duesub;
-                            TeaType.push({"type": type, "quantity": qty});
-alert(TeaType);
-///chamildddddfsdf  fffffffffffffffff
-
-
-
-
-
-
+                            Center.push({"type": type, "quantity": qty});
 
                         }
+                        AmCharts.ready(function () {
 
+                            // SERIAL CHART
+                            chart = new AmCharts.AmSerialChart();
+                            chart.dataProvider = Center;
+                            chart.categoryField = "type";
+                            chart.startDuration = 1;
+                            chart.plotAreaBorderColor = "#DADADA";
+                            chart.plotAreaBorderAlpha = 1;
+                            // this single line makes the chart a bar chart
+                            chart.rotate = false;
+
+                            // AXES
+                            // Category
+                            var categoryAxis = chart.categoryAxis;
+                            categoryAxis.gridPosition = "start";
+                            categoryAxis.gridAlpha = 0.1;
+                            categoryAxis.axisAlpha = 0;
+
+                            // Value
+                            var valueAxis = new AmCharts.ValueAxis();
+                            valueAxis.axisAlpha = 0;
+                            valueAxis.gridAlpha = 0.1;
+                            valueAxis.position = "left";
+                            chart.addValueAxis(valueAxis);
+
+                            // GRAPHS
+                            // first graph
+                            var graph1 = new AmCharts.AmGraph();
+                            graph1.type = "column";
+                            graph1.title = "Tea Types";
+                            graph1.valueField = "quantity";
+                            graph1.balloonText = "cash[[value]]";
+                            graph1.lineAlpha = 0;
+                            graph1.fillColors = "#FCC804";
+                            graph1.fillAlphas = 1;
+                            chart.addGraph(graph1);
+                            var legend = new AmCharts.AmLegend();
+                            chart.addLegend(legend);
+                            chart.creditsPosition = "top-right";
+                            // WRITE
+                            chart.write("chartdiv");
+                        });
+
+//                        var chart2;
+
+
+
+
+                        var chart2;
+                        AmCharts.ready(function () {
+                            // PIE CHART
+                            chart2 = new AmCharts.AmPieChart();
+                            chart2.dataProvider = Center;
+                            chart2.titleField = "type";
+                            chart2.valueField = "quantity";
+                            chart2.sequencedAnimation = true;
+                            chart2.startEffect = "elastic";
+                            chart2.innerRadius = "50%";
+                            chart2.startDuration = 2;
+                            chart2.labelRadius = 15;
+                            chart2.balloonText = "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>";
+                            // the following two lines makes the chart 3D
+                            chart2.depth3D = 3;
+                            chart2.angle = 10;
+
+
+                            // WRITE
+                            chart2.write("chartdiv2");
+                        });
                     }
                 });
-
-
-//                var TeaType = [
-//                    {
-//                        "remaining_qty": 65,
-//                        "drytea_type": "qqq Tea"
-//                    },
-//                    {
-//                        "remaining_qty": 50,
-//                        "drytea_type": "hhhh Tea"
-//                    },
-//                    {
-//                        "remaining_qty": 25,
-//                        "drytea_type": "ddd Tea"
-//                    }
-//                ];
-
-
-                AmCharts.ready(function() {
-                    // SERIAL CHART
-                    chart = new AmCharts.AmSerialChart();
-                    chart.dataProvider = TeaType;
-                    chart.categoryField = "drytea_type";
-                    chart.startDuration = 1;
-                    chart.plotAreaBorderColor = "#DADADA";
-                    chart.plotAreaBorderAlpha = 1;
-                    // this single line makes the chart a bar chart
-                    chart.rotate = false;
-
-                    // AXES
-                    // Category
-                    var categoryAxis = chart.categoryAxis;
-                    categoryAxis.gridPosition = "start";
-                    categoryAxis.gridAlpha = 0.1;
-                    categoryAxis.axisAlpha = 0;
-
-                    // Value
-                    var valueAxis = new AmCharts.ValueAxis();
-                    valueAxis.axisAlpha = 0;
-                    valueAxis.gridAlpha = 0.1;
-                    valueAxis.position = "left";
-                    chart.addValueAxis(valueAxis);
-
-                    // GRAPHS
-                    // first graph
-                    var graph1 = new AmCharts.AmGraph();
-                    graph1.type = "column";
-                    graph1.title = "Center cash";
-                    graph1.valueField = "remaining_qty";
-                    graph1.balloonText = "cash[[value]]";
-                    graph1.lineAlpha = 0;
-                    graph1.fillColors = "#FCC804";
-                    graph1.fillAlphas = 1;
-                    chart.addGraph(graph1);
-
-//            // second graph
-//            var graph2 = new AmCharts.AmGraph();
-//            graph2.type = "column";
-//            graph2.title = "past due";
-//            graph2.valueField = "remaining_qty";
-//            graph2.balloonText = "pd[[value]]";
-//            graph2.lineAlpha = 0;
-//            graph2.fillColors = "#FF751A";
-//            graph2.fillAlphas = 1;
-//            chart.addGraph(graph2);
-                    // LEGEND
-                    var legend = new AmCharts.AmLegend();
-                    chart.addLegend(legend);
-
-                    chart.creditsPosition = "top-right";
-
-                    // WRITE
-                    chart.write("chartdiv");
-                });
             }
+
+
         </script>
 
     </head>
@@ -241,17 +230,15 @@ alert(TeaType);
                         </div> 
                     </div> 
                 </div>
-                <div id="chartdiv" style="width: 1000px; height:400px; ">
+                <div id="chartdiv" style="width: 890px; height:400px;float: left "></div>
+                <div id="chartdiv2" style="width:428px; height:390px;margin-left:-800px;"></div>
+                </body>
+                <?php require 'template/footer.php' ?>
+                </html>
 
-                </div>
-            </div>
-    </body>
-    <?php require 'template/footer.php' ?>
-</html>
-
-<!-- if ($user->user_role=='Admin'){
-            header("location: dashboard.php");
-            }
-            elseif ($user->user_role=='User') {
-             header("location: listsupplier.php");
-        }-->
+                <!-- if ($user->user_role=='Admin'){
+                            header("location: dashboard.php");
+                            }
+                            elseif ($user->user_role=='User') {
+                             header("location: listsupplier.php");
+                        }-->
